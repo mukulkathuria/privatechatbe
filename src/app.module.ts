@@ -18,6 +18,10 @@ import { UserModule } from './Modules/user/user.module';
       rootPath: join(__dirname, '..', 'userprofile'),
       serveRoot: '/userprofile',
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'messages'),
+      serveRoot: '/messages',
+    }),
     EventsModule,
     UserModule,
     AuthModule,

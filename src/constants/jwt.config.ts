@@ -6,7 +6,7 @@ export const accessTokenConfig: SignOptions = {
 };
 
 export const refreshTokenConfig: SignOptions = {
-  expiresIn: '5h',
+  expiresIn: '8h',
   algorithm: 'HS256',
 };
 

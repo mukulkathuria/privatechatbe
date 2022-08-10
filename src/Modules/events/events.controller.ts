@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { WsAuthGuard } from '../auth/guards/wsjwt.guard';
-import { joinedRoomDto, messageRoomDto } from './dto/joinroom.dto';
+import { joinedRoomDto, messageRoomDto, sendFileDto } from './dto/joinroom.dto';
 import { EventsService } from './events.service';
 import {
   joinedRoomValidation,
@@ -48,7 +48,6 @@ export class EventsGateway {
     }
   }
 
-  @UseGuards(WsAuthGuard)
   @SubscribeMessage('leavechatroom')
   async leaveroom(
     @MessageBody() roomdata: joinedRoomDto,
@@ -82,6 +81,17 @@ export class EventsGateway {
       }
     } else {
       throw new WsException('Chatroom is not available');
+    }
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('sendFile')
+  async sendFile(@MessageBody() data: sendFileDto): Promise<void> {
+    const { userData } = await this.eventService.sendFileinRoom(data);
+    if (userData) {
+      this.server.to(userData.chatroomid).emit('message', userData);
+    } else {
+      throw new WsException('Error occured');
     }
   }
 }

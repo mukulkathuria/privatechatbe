@@ -1,4 +1,5 @@
 import { Schema, Types } from 'mongoose';
+import { uuid } from 'src/utils/uuid';
 import { chatModelDto } from './dto/chatmodel.dto';
 
 export const ChatRoomSchema = new Schema<chatModelDto>({
@@ -38,6 +39,10 @@ export const ChatRoomSchema = new Schema<chatModelDto>({
       _id: {
         type: Types.ObjectId,
         default: new Types.ObjectId(),
+      },
+      messageid: {
+        type: String,
+        default: uuid(),
       },
       senderUsername: {
         type: String,
