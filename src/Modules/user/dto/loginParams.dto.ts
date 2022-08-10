@@ -12,6 +12,7 @@ export type authtokenDto = {
   username: string;
   name: string;
   roles: string;
+  gender: string;
 };
 
 export interface loginReturnDto {

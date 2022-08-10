@@ -1,6 +1,11 @@
 import { Document } from 'mongoose';
 
-type UserLog = {
+export type lastMessageDto = {
+  sender: string;
+  message: string;
+};
+
+export type UserLog = {
   isOnline: boolean;
   deletedChat: Date | unknown;
   lastOffline: Date | unknown;
@@ -9,6 +14,7 @@ type UserLog = {
 
 export type MessagesDto = {
   _id?: string | unknown;
+  messageid?: string;
   senderUsername: string;
   message: string;
   isFile?: boolean;
@@ -22,6 +28,7 @@ export interface chatModelDto extends Document {
   chatroomid: string;
   users: Array<UserLog> | [];
   messages: Array<MessagesDto> | [];
+  lastMessage: lastMessageDto;
   createdBy: string;
   createdAt: Date | unknown;
   createdUser: string;

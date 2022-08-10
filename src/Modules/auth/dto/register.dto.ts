@@ -1,7 +1,10 @@
+import { GenderEnum } from 'src/Models/dto/user.dto';
+
 export type registerRequestDto = {
   name: string;
   username: string;
   password: string;
+  gender: GenderEnum;
 };
 
 export type refreshTokenParamsDto = {

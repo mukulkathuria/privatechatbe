@@ -11,6 +11,7 @@ import {
   messageRoomDto,
   sendFileDto,
 } from './dto/joinroom.dto';
+import { checkUserMessages } from './utils/checkUserMessage';
 import { fileSendValidation } from './validations/event.validations';
 
 @Injectable()
@@ -33,7 +34,10 @@ export class EventsService {
           { new: true },
         )
         .select('chatroomid users createdBy messages');
-
+      await this.userModel.findOneAndUpdate(
+        { username, 'Chats.chatroomid': roomid },
+        { $set: { 'Chats.$.unseenMessages': 0 } },
+      );
       return { data };
     } catch (error) {
       return { error: { status: 500, message: 'Server error' } };
@@ -76,10 +80,20 @@ export class EventsService {
             $push: {
               messages: { senderUsername: username, message },
             },
+            $set: { lastMessage: { sender: username, message: message } },
           },
           { new: true },
         )
         .select('chatroomid users createdBy messages');
+      const { isBothOnline, receiver } = checkUserMessages(data, username);
+      if (!isBothOnline) {
+        await this.userModel.findOneAndUpdate(
+          { username: receiver, 'Chats.chatroomid': roomid },
+          {
+            $inc: { 'Chats.$.unseenMessages': 1 },
+          },
+        );
+      }
       return { userData: data };
     } catch (error) {
       return { error: { status: 500, message: 'Server error' } };
@@ -116,10 +130,22 @@ export class EventsService {
                 mimeType,
               },
             },
+            $set: {
+              lastMessage: { sender: username, message: 'Sent a photo 📷️' },
+            },
           },
           { new: true },
         )
         .select('chatroomid users createdBy messages');
+      const { isBothOnline, receiver } = checkUserMessages(user, username);
+      if (!isBothOnline) {
+        await this.userModel.findOneAndUpdate(
+          { username: receiver, 'Chats.chatroomid': roomid },
+          {
+            $inc: { 'Chats.$.unseenMessages': 1 },
+          },
+        );
+      }
       return { userData: user };
     } catch (error) {
       return { error: { status: 500, message: 'Server issue' } };

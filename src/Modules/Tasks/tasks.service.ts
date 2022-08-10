@@ -40,7 +40,10 @@ export class TasksService {
   async removeEverything() {
     try {
       removeMessagePics();
-      await this.chatModel.updateMany({}, { $set: { messages: [] } });
+      await this.chatModel.updateMany(
+        {},
+        { $set: { messages: [], lastMessage: { sender: '', message: '' } } },
+      );
       this.logger.warn('Succesfully removed all the messages');
     } catch (error) {
       this.logger.error('Some error occur didnt remove messages');

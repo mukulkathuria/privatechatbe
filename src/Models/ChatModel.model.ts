@@ -76,6 +76,16 @@ export const ChatRoomSchema = new Schema<chatModelDto>({
     type: String,
     required: true,
   },
+  lastMessage: {
+    sender: {
+      type: String,
+      default: '',
+    },
+    message: {
+      type: String,
+      default: '',
+    },
+  },
   createdUser: {
     type: String,
     required: true,

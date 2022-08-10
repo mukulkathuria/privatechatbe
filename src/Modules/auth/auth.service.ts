@@ -86,6 +86,7 @@ export class AuthService {
       username: user.username,
       name: user.name,
       roles: user?.roles || Role.Normal,
+      gender: user.gender,
     };
     const id = uuid();
     const refresh_token = sign(
@@ -129,13 +130,14 @@ export class AuthService {
       if (existingUsername) {
         return { error: { status: 422, message: 'Username already exists' } };
       }
-      const { name, username, password } = user;
+      const { name, username, password, gender } = user;
       const agent = agentDetails.ua.includes('Postman');
       const values = {
         username,
         name,
         password: encrypt(password),
         Chats: [],
+        gender,
         profile: '',
         browser: agent
           ? agentDetails.ua
@@ -166,6 +168,7 @@ export class AuthService {
       name: refreshToken.name,
       username: refreshToken.username,
       roles: refreshToken.roles,
+      gender: refreshToken.gender,
     };
     return {
       access_token: sign(

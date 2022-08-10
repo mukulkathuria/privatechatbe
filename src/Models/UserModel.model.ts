@@ -1,6 +1,6 @@
 import { Schema, Types } from 'mongoose';
-import { USERDOCUMENT } from 'src/constants/mongoose.documents';
-import { Role, UserModelDto } from './dto/user.dto';
+import { CHATDOCUMENT, USERDOCUMENT } from 'src/constants/mongoose.documents';
+import { GenderEnum, Role, UserModelDto } from './dto/user.dto';
 
 export const Userschema = new Schema<UserModelDto>({
   _id: {
@@ -17,6 +17,11 @@ export const Userschema = new Schema<UserModelDto>({
     required: true,
     min: 5,
     max: 255,
+  },
+  gender: {
+    type: String,
+    enum: GenderEnum,
+    default: GenderEnum.male,
   },
   profile: {
     type: String,
@@ -44,6 +49,7 @@ export const Userschema = new Schema<UserModelDto>({
         type: Number,
         default: 0,
       },
+      chatInfo: { type: Types.ObjectId, ref: CHATDOCUMENT },
     },
   ],
   Contacts: [{ type: Types.ObjectId, ref: USERDOCUMENT }],

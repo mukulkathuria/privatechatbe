@@ -29,9 +29,10 @@ export class UserService {
     if (username) {
       const currentuser = await this.userModel
         .findOne({ username })
-        .populate('Contacts', 'profile name username')
-        .populate('Chats.user', 'profile name username')
-        .select('name profile username Chats Contacts');
+        .populate('Contacts', 'profile name username gender')
+        .populate('Chats.user', 'profile name username gender')
+        .populate('Chats.chatInfo', 'lastMessage')
+        .select('name profile username Chats Contacts gender');
       if (currentuser) {
         return { user: currentuser };
       }
@@ -49,9 +50,10 @@ export class UserService {
       .find({
         $or: [{ username: username }, { username: contactUsername }],
       })
-      .populate('Contacts', 'profile name username')
-      .populate('Chats.user', 'profile name username')
-      .select('name profile username Chats Contacts');
+      .populate('Contacts', 'profile name username gender')
+      .populate('Chats.user', 'profile name username gender')
+      .populate('Chats.chatInfo', 'lastMessage')
+      .select('name profile username Chats Contacts gender');
 
     if (data.length < 2) {
       return { error: { status: 422, message: 'User is not present' } };
@@ -65,6 +67,7 @@ export class UserService {
         createdUser: { $regex: createdUserRegex },
       });
       let chatroomid = uuid();
+      let chatid = isChatAvailable?.id;
       const currentUserData = data.find((l) => l.username === username);
       const contactUserData = data.find((l) => l.username === contactUsername);
 
@@ -79,6 +82,7 @@ export class UserService {
           users: [{ username }, { username: contactUsername }],
         };
         const chatdata = await new this.chatModel(chatroomdata);
+        chatid = chatdata.id;
         chatdata.save();
       }
 
@@ -96,14 +100,16 @@ export class UserService {
                 Chats: {
                   user: contactUserData.id,
                   chatroomid,
+                  chatInfo: chatid,
                 },
               },
             },
             { new: true },
           )
-          .populate('Contacts', 'profile name username')
-          .populate('Chats.user', 'profile name username')
-          .select('name profile username Chats Contacts');
+          .populate('Contacts', 'profile name username gender')
+          .populate('Chats.user', 'profile name username gender')
+          .populate('Chats.chatInfo', 'lastMessage')
+          .select('name profile username Chats Contacts gender');
       }
       if (
         !contactUserData.Chats.find(
@@ -116,6 +122,7 @@ export class UserService {
             Chats: {
               user: currentUserData.id,
               chatroomid,
+              chatInfo: chatid,
             },
           },
         });
@@ -223,9 +230,10 @@ export class UserService {
             { $set: { name: updatename } },
             { new: true },
           )
-          .populate('Contacts', 'profile name username')
-          .populate('Chats.user', 'profile name username')
-          .select('name profile username Chats Contacts');
+          .populate('Contacts', 'profile name username gender')
+          .populate('Chats.user', 'profile name username gender')
+          .populate('Chats.chatInfo', 'lastMessage')
+          .select('name profile username Chats Contacts gender');
         return { user };
       } else if (removeprofile) {
         removeUserPic(username);
@@ -235,9 +243,10 @@ export class UserService {
             { $set: { profile: '' } },
             { new: true },
           )
-          .populate('Contacts', 'profile name username')
-          .populate('Chats.user', 'profile name username')
-          .select('name profile username Chats Contacts');
+          .populate('Contacts', 'profile name username gender')
+          .populate('Chats.user', 'profile name username gender')
+          .populate('Chats.chatInfo', 'lastMessage')
+          .select('name profile username Chats Contacts gender');
         return { user };
       } else if (updateprofile) {
         const user = await this.userModel
@@ -246,9 +255,10 @@ export class UserService {
             { $set: { profile: file.path } },
             { new: true },
           )
-          .populate('Contacts', 'profile name username')
-          .populate('Chats.user', 'profile name username')
-          .select('name profile username Chats Contacts');
+          .populate('Contacts', 'profile name username gender')
+          .populate('Chats.user', 'profile name username gender')
+          .populate('Chats.chatInfo', 'lastMessage')
+          .select('name profile username Chats Contacts gender');
         return { user };
       }
     } catch (error) {

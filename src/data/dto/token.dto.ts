@@ -2,6 +2,7 @@ export type tokenDto = {
   username: string;
   roles: string;
   name: string;
+  gender: string;
   iat: number;
   exp: number;
 };
