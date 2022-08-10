@@ -8,6 +8,7 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { WsThrottlerGuard } from '../auth/guards/throttler.guard';
 import { WsAuthGuard } from '../auth/guards/wsjwt.guard';
 import { joinedRoomDto, messageRoomDto, sendFileDto } from './dto/joinroom.dto';
 import { EventsService } from './events.service';
@@ -16,17 +17,14 @@ import {
   messageRoomValidation,
 } from './validations/event.validations';
 
-@WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
-})
+@WebSocketGateway()
 export class EventsGateway {
   constructor(private readonly eventService: EventsService) {}
 
   @WebSocketServer()
   server: Server;
 
+  @UseGuards(WsThrottlerGuard)
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('joinchatroom')
   async addedUser(
@@ -48,6 +46,7 @@ export class EventsGateway {
     }
   }
 
+  @UseGuards(WsThrottlerGuard)
   @SubscribeMessage('leavechatroom')
   async leaveroom(
     @MessageBody() roomdata: joinedRoomDto,
@@ -68,6 +67,7 @@ export class EventsGateway {
     }
   }
 
+  @UseGuards(WsThrottlerGuard)
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('sendMessage')
   async sendMessage(@MessageBody() data: messageRoomDto): Promise<void> {
@@ -84,6 +84,7 @@ export class EventsGateway {
     }
   }
 
+  @UseGuards(WsThrottlerGuard)
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('sendFile')
   async sendFile(@MessageBody() data: sendFileDto): Promise<void> {
