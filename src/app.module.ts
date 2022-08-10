@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { join } from 'path';
 import { AuthModule } from './Modules/auth/auth.module';
 import { EventsModule } from './Modules/events/events.module';
+import { TasksModule } from './Modules/Tasks/tasks.module';
 import { UserModule } from './Modules/user/user.module';
 
 @Module({
@@ -27,6 +29,8 @@ import { UserModule } from './Modules/user/user.module';
       rootPath: join(__dirname, '..', 'messages'),
       serveRoot: '/messages',
     }),
+    ScheduleModule.forRoot(),
+    TasksModule,
     EventsModule,
     UserModule,
     AuthModule,
