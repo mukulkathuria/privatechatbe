@@ -13,3 +13,7 @@ export type updateUserParams = {
   query: updateUserQueryDto;
   username: string;
 };
+
+export type searchUserQuery = {
+  user: string;
+};

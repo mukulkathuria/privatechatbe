@@ -45,20 +45,18 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(200)
-  async getRegister(
-    @Req() req: Request,
-    @Body() value: registerRequestDto,
-  ): Promise<returnTokenDto> {
+  async getRegister(@Req() req: Request, @Body() value: registerRequestDto) {
     const agentDetails = new UAParser()
       .setUA(req.headers['user-agent'])
       .getResult();
-    const { error, access_token, refresh_token } =
-      await this.authServer.createUser(value, agentDetails);
-    if (access_token && refresh_token) {
+    const { error, success } = await this.authServer.createUser(
+      value,
+      agentDetails,
+    );
+    if (success) {
       return {
-        access_token,
-        refresh_token,
         success: true,
+        message: 'User created successfully you can login now.',
       };
     } else {
       throw new HttpException(error.message, error.status);

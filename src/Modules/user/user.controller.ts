@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpException,
   Post,
@@ -15,7 +16,7 @@ import { multerConfigUserProfile } from 'src/constants/multer.config';
 import { imageFileFilter } from 'src/utils/multer.utils';
 import { logoutParamsDto } from '../auth/dto/register.dto';
 import { AuthGuard } from '../auth/guards/jwt.guard';
-import { updateUserQueryDto } from './dto/updateUser.dto';
+import { searchUserQuery, updateUserQueryDto } from './dto/updateUser.dto';
 import {
   addContactsParams,
   chatContactUserDto,
@@ -155,6 +156,21 @@ export class UserController {
       return {
         success: true,
         user,
+      };
+    } else {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/user/searchuser')
+  @HttpCode(200)
+  async searchUser(@Query() query: searchUserQuery) {
+    const { error, users } = await this.userService.searchUserName(query);
+    if (users) {
+      return {
+        success: true,
+        users,
       };
     } else {
       throw new HttpException(error.message, error.status);

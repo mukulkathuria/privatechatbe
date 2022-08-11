@@ -115,10 +115,7 @@ export class AuthService {
     };
   }
 
-  async createUser(
-    user: registerRequestDto,
-    agentDetails: UAParser.IResult,
-  ): Promise<loginReturnDto> {
+  async createUser(user: registerRequestDto, agentDetails: UAParser.IResult) {
     const { error } = checkrequiredFields(user);
     if (error) {
       return { error };
@@ -150,8 +147,8 @@ export class AuthService {
       };
       const data = await new this.userModel(values);
       data.save();
-      const { access_token, refresh_token } = await this.getUserToken(data);
-      return { access_token, refresh_token };
+      // const { access_token, refresh_token } = await this.getUserToken(data);
+      return { success: true };
     } catch (error) {
       return { error: { status: 500, message: 'Data not saved' } };
     }

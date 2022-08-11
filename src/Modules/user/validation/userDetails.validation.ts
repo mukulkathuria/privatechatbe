@@ -1,4 +1,4 @@
-import { updateUserParams } from '../dto/updateUser.dto';
+import { searchUserQuery, updateUserParams } from '../dto/updateUser.dto';
 
 export const userDetailsValidate = (userDetails: updateUserParams) => {
   const { file, query, username } = userDetails;
@@ -16,4 +16,15 @@ export const userDetailsValidate = (userDetails: updateUserParams) => {
   }
 
   return { data: true };
+};
+
+export const searchUserValidate = (query: searchUserQuery) => {
+  const { user } = query;
+  if (!user || !user.trim().length) {
+    return { error: { status: 422, message: 'User name is required' } };
+  } else if (user.length < 3) {
+    return { error: { status: 422, message: 'Minimum 3 char required' } };
+  }
+
+  return { user };
 };

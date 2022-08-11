@@ -6,7 +6,7 @@ import { chatModelDto } from 'src/Models/dto/chatmodel.dto';
 import { ChatRoomDto, Role, UserModelDto } from 'src/Models/dto/user.dto';
 import { removeUserPic } from 'src/utils/multer.utils';
 import { uuid } from 'src/utils/uuid';
-import { updateUserParams } from './dto/updateUser.dto';
+import { searchUserQuery, updateUserParams } from './dto/updateUser.dto';
 import {
   addContactsParams,
   authUserRoleDto,
@@ -15,7 +15,10 @@ import {
   returnUserDetailsDto,
 } from './dto/userDetails.dto';
 import { checkContactUsername } from './validation/contacts.validation';
-import { userDetailsValidate } from './validation/userDetails.validation';
+import {
+  searchUserValidate,
+  userDetailsValidate,
+} from './validation/userDetails.validation';
 
 @Injectable()
 export class UserService {
@@ -266,5 +269,21 @@ export class UserService {
     }
 
     return { error: { status: 500, message: 'Server issue' } };
+  }
+
+  async searchUserName(query: searchUserQuery) {
+    const { error, user } = searchUserValidate(query);
+    if (error) {
+      return { error };
+    }
+    try {
+      const regex = new RegExp(user, 'i');
+      const users = await this.userModel
+        .find({ name: { $regex: regex } })
+        .select('name profile username gender');
+      return { users };
+    } catch (error) {
+      return { error: { status: 410, message: 'Users not found' } };
+    }
   }
 }
