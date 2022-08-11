@@ -1,10 +1,10 @@
 {
-  "name": "testws",
+  "name": "chichatbe",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Its backend app for chitchat",
+  "author": "Mukul Kathuria",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

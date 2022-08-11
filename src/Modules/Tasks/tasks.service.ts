@@ -38,7 +38,7 @@ export class TasksService {
     });
   }
 
-  @Cron(CronExpression.EVERY_30_MINUTES)
+  @Cron(CronExpression.EVERY_DAY_AT_4AM)
   async removeEverything() {
     try {
       removeMessagePics();
